@@ -1,0 +1,94 @@
+# staticlTableViewLableAutoResize
+you can make tableview cell with dynamic row height
+//
+//  View3.swift
+//  tableview
+//
+//  Created by mac on 5/9/18.
+//  Copyright © 2018 mac. All rights reserved.
+//
+
+import UIKit
+class tablecell3: UITableViewCell{
+    
+    
+    @IBOutlet var lbl_name2: UILabel!
+    }
+
+class View3: UIViewController, UITableViewDelegate, UITableViewDataSource{
+    
+    var currentRow = -1
+    var array = ["vishal","jay is a cricketer","Ratilal is a senior php develper in mxicoders","Failure will never overtake me if my determination to succeed is strong enough. bcgnhgthndeghf","I also hope this list might be helpful for teachers and professors of writing, who want more lengthy sentence examples to show their students. If you want to teach short sentences, I've also compiled a list of those. The longest sentence in English is also awesome","There was nothing the merchant could do except return home, where he loaded his donkey with more bags of salt. As they reached the slippery riverbank again, the donkey fell into the river, this time deliberately. Thus the salt was wasted again. There was nothing the merchant could do except return home, where he loaded his donkey with more bags of salt. As they reached the slippery riverbank again, the donkey fell into the river, this time deliberately. Thus the salt was wasted again. "]
+
+
+    @IBOutlet var tableview3: UITableView!
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+       tableview3.estimatedRowHeight = 70.0
+        tableview3.tableFooterView = UIView()
+        // Do any additional setup after loading the view.
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == currentRow{
+            return UITableViewAutomaticDimension
+        }
+        else{
+            return 42
+        }
+    }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return array.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableview3.dequeueReusableCell(withIdentifier: "cell3", for: indexPath) as! tablecell3
+        
+        cell.lbl_name2.text = array[indexPath.row]
+        
+        
+        return cell
+    }
+    
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        
+        
+        
+        if currentRow == indexPath.row{
+            currentRow = -1
+        }
+        else{
+            currentRow = indexPath.row
+        }
+        //selectedRowIndex = indexPath
+        tableview3.reloadRows(at: [indexPath], with: .automatic)
+        
+    }
+   
+    
+    @IBAction func backClick(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+    }
+    */
+
+}
