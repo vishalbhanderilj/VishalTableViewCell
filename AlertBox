@@ -1,0 +1,12 @@
+extension UIViewController {
+    
+    func alertMessage(title: String, message: String)
+    {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        let action = UIAlertAction(title: "Ok", style: .default, handler: nil)
+        alert.addAction(action)
+        UIApplication.shared.endIgnoringInteractionEvents()
+        
+        present(alert, animated: true, completion: nil)
+    }
+}
