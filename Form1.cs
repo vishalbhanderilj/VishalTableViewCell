@@ -9,224 +9,275 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
-namespace WnodowsFormByVishal1
+namespace VishalFly
 {
     public partial class Form1 : Form
     {
-        public MySqlConnection conn = new MySqlConnection(@"server=127.0.0.1;port=3306;database=vishal;userid=root;password=D2z1D04**;");
-        //MySqlConnection conn1;
-        //string cs = @"server=127.0.0.1;port=3306;database=vishal;user id=root;password=D2z1D04**;";
-
+        //string cs1 = @"server=127.0.0.1;port=3306;database=vishal;user id=root;password=D2z1D04**;";
+        public MySqlConnection conn = new MySqlConnection(@"server=127.0.0.1;port=3306;database=vishal;user id=root;password=D2z1D04**;");
+       // public MySqlConnection conn = new MySqlConnection(cs1);
         MySqlCommand cmd;
         MySqlDataAdapter adapt;
-        public string gen1 = "";
-        
-
-        //id variable for using updating and deletion record
-        public int ID = 0;
+        public int Id = 0;
+        string gender1 = "";
+        string gender4 = "";
         public Form1()
         {
             InitializeComponent();
-            DisplayData();
+            display_data();
+            comboBox1.Text="--Select--";
         }
-
-        private void Form1_Load(object sender, EventArgs e)
+        //function for insert data into table
+        private void insert_Data()
         {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (ID != 0)
-                {
-                    cmd = new MySqlCommand("delete from person where ID=@id", conn);
-                    conn.Open();
-                    cmd.Parameters.AddWithValue("@id", ID);
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                    MessageBox.Show("Record Deleted SuccessFully");
-                    DisplayData();
-                    ClearData();
-                }
-                else
-                {
-                    MessageBox.Show("You can only deleted record by decending id order formate");
-                }
-
-            }
-            catch(MySqlException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (radioButton1.Checked == true)
-            { 
-                gen1 = radioButton1.Text;
-            }
-            else
-            {
-                gen1 = radioButton2.Text;
-            }
+            //string bg = ""; 
+            ///bg = comboBox1.SelectedValue.ToString();
             try
             {
 
-                if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" /*&& (radioButton1.Checked == true || radioButton2.Checked == ture)&& (radioButton1.Checked= true || radioButton2.Checked=true)*/)
-                {
-                    cmd = new MySqlCommand("insert into person(firstname,middlename,lastname,gender) values (@firstname,@middlename,@lastname,@gender)",conn);
-                    conn.Open();
-                    cmd.Parameters.AddWithValue("@firstname", textBox1.Text);
-                    cmd.Parameters.AddWithValue("@middlename", textBox2.Text);
-                    cmd.Parameters.AddWithValue("@lastname", textBox3.Text);
-                    cmd.Parameters.AddWithValue("@gender", gen1);
-                    // conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                    MessageBox.Show("Record Inserted Successfully");
+                
 
-                    // gen1 = "";
-                    DisplayData();
-                    ClearData();
-                }
-                else
-                {
-                    MessageBox.Show("Provide Data SuccessFully");
-                }
-
+                string Insert_Query = "insert into vishaldata(Firstname,Middlename,Lastname,Gender,Dateofbirth,Address,Bloodgroup) values (@firstname,@middlename,@lastname,@gender,@dateofbirth,@address,@bloodgroup)";
+                cmd = new MySqlCommand(Insert_Query, conn);
+                conn.Open();
+                cmd.Parameters.AddWithValue("@firstname", txt_Firstname.Text);
+                cmd.Parameters.AddWithValue("@middlename", txt_Middlename.Text);
+                cmd.Parameters.AddWithValue("@lastname", txt_Lastname.Text);
+                cmd.Parameters.AddWithValue("@gender", gender1);
+                cmd.Parameters.AddWithValue("@dateofbirth", dateTimePicker1.Value.Date);
+                cmd.Parameters.AddWithValue("@address", txtrich_Address.Text);
+                cmd.Parameters.AddWithValue("@bloodgroup", comboBox1.Text);
+                cmd.ExecuteNonQuery();
+                conn.Close();
+                MessageBox.Show("Insert Record Successfully");
+                ClearData();
+                display_data();
             }
-            catch(MySqlException ex)
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+
         }
         private void ClearData()
         {
-            textBox1.Text = "";
-            textBox2.Text = "";
-            textBox3.Text = "";
-            radioButton1.Checked = false;
-            radioButton2.Checked = false;
-            ID = 0;
-            
+            txt_Firstname.Text = "";
+            txt_Middlename.Text = "";
+            txt_Lastname.Text = "";
+            gender1 = "";
+            radio_Male.Checked = false;
+            radio_Female.Checked = false;
+            dateTimePicker1.Value = DateTime.Today;
+            txtrich_Address.Text = "";
+            comboBox1.Text = "--Select--";
         }
-        private void DisplayData()
+
+        private void validate()
+        {
+            if(txt_Firstname.Text != "") {
+                if(txt_Middlename.Text != ""){
+                    if(txt_Lastname.Text != ""){
+                        if(radio_Male.Checked == true || radio_Female.Checked == true){
+                            if (txt_Middlename.Text != ""){
+                                if(comboBox1.SelectedValue != ""){
+                                    insert_Data();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Please Select Your Blood Group");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Please Enter Your Address");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Please Select Your Gender");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please Enter Your Last Name");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please Enter Your Middle Name");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please Enter Your First Name");
+            }
+
+
+        }
+        private void display_data()
         {
             conn.Open();
             DataTable dt = new DataTable();
-            adapt = new MySqlDataAdapter("select * from person", conn);
+            string Select_Query = "select * from vishaldata";
+            adapt = new MySqlDataAdapter(Select_Query, conn);
             adapt.Fill(dt);
             dataGridView1.DataSource = dt;
             conn.Close();
 
+            
+        }
+        private void update_data1()
+        {
+            
+            if(txt_Firstname.Text != "" && txt_Middlename.Text != "" && txt_Lastname.Text != "")
+            {
+                string Update_Query1 = ("update vishaldata set Firstname=@firstname,Middlename=@middlename,Lastname=@lastname,Gender=@gender,Dateofbirth=@dateodbirth,Address=@address,Bloodgroup=@bloodgroup where Id=@id");
+
+                cmd = new MySqlCommand(Update_Query1, conn);
+                conn.Open();
+                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Parameters.AddWithValue("@firstname", txt_Firstname.Text);
+                cmd.Parameters.AddWithValue("@middlename", txt_Middlename.Text);
+                cmd.Parameters.AddWithValue("@lastname", txt_Lastname.Text);
+                cmd.Parameters.AddWithValue("@gender", gender4);
+                cmd.Parameters.AddWithValue("@dateofbirth", dateTimePicker1.Value.Date);
+                //cmd.Parameters.AddWithValue("")
+                cmd.Parameters.AddWithValue("@address", txtrich_Address.Text);
+                cmd.Parameters.AddWithValue("@bloodgroup", comboBox1.Text);
+                cmd.ExecuteNonQuery();
+                MessageBox.Show("Record Updated Successfully");
+                conn.Close();
+                display_data();
+                ClearData();       
+                
 
 
-
+            }
+            else
+            {
+                MessageBox.Show("Provide valid data");
+            }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void update_data()
         {
-            ClearData();
+            
+            try
+            {
+                if (txt_Firstname.Text != "" && txt_Middlename.Text != "" && txt_Lastname.Text != "" && (radio_Male.Checked == true || radio_Female.Checked == true) && txtrich_Address.Text != "" /*&& comboBox1.Text != "--Select--"*/)
+                {
+                    //string Update_Query = ("update vishaldata set Firstname=@firstname,Middlename=@middlename,Lastname=@lastname,Gender=@gender,Dateofbirth=@dateofbirth,Address=@adress,Bloodgroup=@bloodgroup where Id=@id");
+                    cmd = new MySqlCommand("update vishaldata set Firstname=@firstname,Middlename=@middlename,Lastname=@lastname,Gender=@gender,Dateofbirth=@dateofbirth,Address=@adress,Bloodgroup=@bloodgroup where Id=@id", conn);
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("@id", Id);
+                    cmd.Parameters.AddWithValue("@firstname", txt_Firstname.Text);
+                    cmd.Parameters.AddWithValue("@middlename", txt_Middlename.Text);
+                    cmd.Parameters.AddWithValue("@lastname", txt_Lastname.Text);
+                    cmd.Parameters.AddWithValue("@gender", gender4);
+                    cmd.Parameters.AddWithValue("@dateofbirth", dateTimePicker1.Value.Date);
+                    cmd.Parameters.AddWithValue("@address", txtrich_Address.Text);
+                    cmd.Parameters.AddWithValue("@bloodgroup", comboBox1.Text);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    MessageBox.Show("Update Record Successfully");
+                    ClearData();
+                    display_data();
+
+
+                }
+                else
+                {
+                    MessageBox.Show("Please Inser All Record");
+                }
+
+            }
+            catch(MySqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
+
         }
-
-        private void button5_Click(object sender, EventArgs e)
+        private void delete_data()
         {
-            DisplayData();
+            try
+            {
+                if (Id != 0)
+                {
+                    string Delete_Query = ("delete from vishaldata where Id=@id");
+                    cmd = new MySqlCommand(Delete_Query, conn);
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("@id", Id);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    MessageBox.Show("Delete Record Successfully");
+                    display_data();
+                    ClearData();
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btn_Insert_Click(object sender, EventArgs e)
         {
-
+            if(radio_Male.Checked == true)
+            {
+                gender1 = radio_Male.Text;
+            }
+            else
+            {
+                gender1 = radio_Female.Text;
+            }
+            validate();
         }
 
         private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            string gen4 = "";
-            ID = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
-            textBox1.Text = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
-            textBox2.Text = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
-            textBox3.Text = dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString();
-            gen4 = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
-            if (gen4 == "Male" || gen4 == "male")
+            string gender2 = "";
+            string dob = "";
+            Id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
+            txt_Firstname.Text = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+            txt_Middlename.Text = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
+            txt_Lastname.Text = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
+            gender2 = dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString();
+            if (gender2 == "Male" || gender2 == "male")
             {
-                radioButton1.Checked = true;
+                radio_Male.Checked = true;
             }
             else
             {
-                radioButton2.Checked = true;
+                radio_Female.Checked = true;
             }
-           // radioButton1.Checked = dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString("Male");
-            //radioButton2.Checked = dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString("Female");
-
-
+            dob = dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString();
+            dateTimePicker1.Value = DateTime.Parse(dob);
+            //DateTime time = DateTime.Parse(dob);
+            txtrich_Address.Text = dataGridView1.Rows[e.RowIndex].Cells[6].Value.ToString();
+            comboBox1.Text = dataGridView1.Rows[e.RowIndex].Cells[7].Value.ToString();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btn_Update_Click(object sender, EventArgs e)
         {
-            string gen2 = "";
-            if (radioButton1.Checked == true)
+            //string gender4 = "";
+            if (radio_Male.Checked == true)
             {
-                 gen2 = radioButton1.Text;
-                
+                gender4 = radio_Male.Text;
             }
             else
             {
-                 gen2 = radioButton2.Text;
+                gender4 = radio_Female.Text;
             }
-            try
-            {
+            update_data();
+        }
 
-                if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "" && gen2 != "")
-                {
-                    cmd = new MySqlCommand("update person set firstname=@firstname,middlename=@middlename,lastname=@lastname,gender=@gender where ID=@id", conn);
-                    conn.Open();
-                    cmd.Parameters.AddWithValue("@id", ID);
-                    cmd.Parameters.AddWithValue("@firstname", textBox1.Text);
-                    cmd.Parameters.AddWithValue("@middlename", textBox2.Text);
-                    cmd.Parameters.AddWithValue("@lastname", textBox3.Text);
-                    cmd.Parameters.AddWithValue("@gender", gen2);
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Record Update Successfully");
-                    conn.Close();
-                    DisplayData();
-                    ClearData();
-                }
-                else
-                {
-                    MessageBox.Show("PRovide Data");
-                }
-            }
-            catch(MySqlException e1)
-            {
-                MessageBox.Show(e1.Message);
-            }
+        private void btn_Delete_Click(object sender, EventArgs e)
+        {
             
             
-               
+           delete_data();  
+            
             
         }
     }
